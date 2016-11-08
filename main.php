@@ -6,7 +6,7 @@ use  GuzzleHttp\Client;
 
 class Log
 {
-    const LOG_FILE = "log.txt";
+    const LOG_FILE = "storage/log.txt";
 
     public static function info($message)
     {
@@ -29,7 +29,7 @@ class Log
 
 class Stat
 {
-    const STAT_FILE = "stats.txt";
+    const STAT_FILE = "storage/stats.txt";
     private $stats;
 
     /**
@@ -118,6 +118,7 @@ class Spider
 
     function recordUser($username, $avatar)
     {
+        $username = trim(preg_replace("/[^a-zA-Z0-9 ]+/", "", $username));
         file_put_contents(self::USERS_FILE, "$username,$avatar\n", FILE_APPEND);
     }
 
