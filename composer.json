@@ -9,6 +9,11 @@
             "email": "slimhigh@gmail.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "Slim\\": "lib/"
+        }
+    },
     "require": {
         "guzzlehttp/guzzle": "^6.2"
     }
