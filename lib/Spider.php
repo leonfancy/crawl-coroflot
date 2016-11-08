@@ -70,7 +70,7 @@ class Spider
 
     function run()
     {
-        for ($page = 1; $page < 2; $page++) {
+        for ($page = 1; $page < 5000; $page++) {
             $profiles = $this->getPage($page);
             foreach ($profiles as $profile) {
                 if ($profile['avatar_image'] && !$this->stats->isDuplicated($profile['job_seeker_id'])) {
