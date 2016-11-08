@@ -1,0 +1,15 @@
+{
+    "name": "qisike/fakeuser",
+    "description": "fake users for shoplex.com",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Chen Liang",
+            "email": "slimhigh@gmail.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^6.2"
+    }
+}
