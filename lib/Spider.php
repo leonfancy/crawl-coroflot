@@ -10,6 +10,7 @@ class Spider
     const USERS_FILE = "storage/users.txt";
 
     private $stats;
+    private $client;
 
     /**
      * Spider constructor.
@@ -19,13 +20,13 @@ class Spider
     {
         $this->stats = $stats;
         $this->stats->loadStats();
+        $this->client = new Client();
     }
 
     function getPage($page)
     {
         try {
-            $client = new Client();
-            $response = $client->request('POST', 'http://www.coroflot.com/people/search', [
+            $response = $this->client->request('POST', 'http://www.coroflot.com/people/search', [
                 'headers' => ['Accept' => 'application/json'],
 
                 'form_params' => ['page_number' => $page, 'sort_by' => "1", 'currently_featured' => "false"]
@@ -43,12 +44,11 @@ class Spider
 
     function downloadSaveAvatar($avatarName)
     {
-        $client = new Client();
         $avatarUrlPrefix = "http://s3images.coroflot.com/user_files/individual_files/avatars/";
         $avatarUrl = $avatarUrlPrefix . $avatarName;
 
         try {
-            $avatarResponse = $client->get($avatarUrl);
+            $avatarResponse = $this->client->get($avatarUrl);
             $extension = pathinfo($avatarName, PATHINFO_EXTENSION);
 
             $fileName = md5(uniqid()) . "." . $extension;
@@ -68,9 +68,10 @@ class Spider
         file_put_contents(self::USERS_FILE, "$username,$avatar\n", FILE_APPEND);
     }
 
-    function run()
+    function run($pageBegin = 0, $pageEnd = 1000)
     {
-        for ($page = 1; $page < 5000; $page++) {
+        for ($page = $pageBegin; $page < $pageEnd; $page++) {
+            Log::debug("Start crawling page $page ...");
             $profiles = $this->getPage($page);
             foreach ($profiles as $profile) {
                 if ($profile['avatar_image'] && !$this->stats->isDuplicated($profile['job_seeker_id'])) {
