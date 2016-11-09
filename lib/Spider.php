@@ -62,9 +62,16 @@ class Spider
         }
     }
 
-    function recordUser($username, $avatar)
+    function recordUser($firstName, $lastName, $avatar)
     {
-        $username = trim(preg_replace("/[^a-zA-Z0-9 ]+/", "", $username));
+        $firstName = trim(preg_replace("/[^a-zA-Z0-9 ]+/", "", $firstName));
+        $lastName = trim(preg_replace("/[^a-zA-Z0-9 ]+/", "", $lastName));
+        if(strlen($firstName) < 4) {
+            $username = $firstName . " " . $lastName;
+        } else {
+            $username = $firstName;
+        }
+
         file_put_contents(self::USERS_FILE, "$username,$avatar\n", FILE_APPEND);
     }
 
@@ -77,7 +84,7 @@ class Spider
                 if ($profile['avatar_image'] && !$this->stats->isDuplicated($profile['job_seeker_id'])) {
                     $avatar = $this->downloadSaveAvatar($profile['avatar_image']);
                     if ($avatar) {
-                        $this->recordUser($profile['first_name'], $avatar);
+                        $this->recordUser($profile['first_name'], $profile['last_name'], $avatar);
                         $this->stats->addStats($profile['job_seeker_id']);
                     }
                 }
